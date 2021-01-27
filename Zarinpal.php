@@ -26,7 +26,18 @@ class Zarinpal extends Model
     private $_card_pan;
     private $_ref_id;
 
+    private $_validations;
 
+    /**
+     * @param $amount ریال
+     * @param $description
+     * @param null $mobile
+     * @param null $email
+     * @param null $card_pan
+     * @param array $additional_params
+     * @return $this
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function request($amount, $description, $mobile = null, $email = null, $card_pan = null, $additional_params = [])
     {
 
@@ -35,7 +46,7 @@ class Zarinpal extends Model
             $this->callback_url = $this->callback_url.'?'.$additional_params;
         }
 
-        $request_params = [
+        $request_params = ['form_params' => [
             'merchant_id' => $this->merchant_id,
             'amount' => $amount,
             'description' => $description,
@@ -45,7 +56,7 @@ class Zarinpal extends Model
                 'email' => $email,
                 'card_pan' => $card_pan,
             ]
-        ];
+        ]];
 
         if($this->testing){
             $url = 'https://sandbox.zarinpal.com/pg/v4/payment/request.json';
@@ -54,20 +65,32 @@ class Zarinpal extends Model
         }
         $body = Json::encode($request_params);
         $client = new Client();
-        $response = $client->request('POST',['body' => $body]);
+        $response = $client->request('POST',$url,$request_params);
         $result = Json::decode($response->getBody());
 
-        $data = $result['data'];
+        if(!empty($result['data'])){
+            $data = $result['data'];
 
-        $this->_authority = $data['authority'];
-        $this->_code = $data['code'];
-        $this->_message = $data['message'];
-        $this->_fee_type = $data['fee_type'];
-        $this->_fee = $data['fee'];
+            $this->_authority = $data['authority'];
+            $this->_code = $data['code'];
+            $this->_message = $data['message'];
+            $this->_fee_type = $data['fee_type'];
+            $this->_fee = $data['fee'];
+        } elseif($result['errors']) {
+            $data = $result['errors'];
+
+            $this->_code = $data['code'];
+            $this->_message = $data['message'];
+            $this->_validations = $data['validations'];
+        }
+
 
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getRedirectUrl()
     {
         if($this->testing){
@@ -78,6 +101,12 @@ class Zarinpal extends Model
         return $url;
     }
 
+    /**
+     * @param $amount
+     * @param $authority
+     * @return $this
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function verify($amount, $authority)
     {
         $request_params = ['form_params' => [
@@ -96,15 +125,24 @@ class Zarinpal extends Model
         $response = $client->request('POST',$url,$request_params);
         $result = Json::decode($response->getBody());
 
-        $data = $result['data'];
+        if(!empty($result['data'])){
+            $data = $result['data'];
 
-        $this->_code = $data['code'];
-        $this->_message = $data['message'];
-        $this->_card_hash = $data['card_hash'];
-        $this->_card_pan = $data['card_pan'];
-        $this->_ref_id = $data['ref_id'];
-        $this->_fee_type = $data['fee_type'];
-        $this->_fee = $data['fee'];
+            $this->_code = $data['code'];
+            $this->_message = $data['message'];
+            $this->_card_hash = $data['card_hash'];
+            $this->_card_pan = $data['card_pan'];
+            $this->_ref_id = $data['ref_id'];
+            $this->_fee_type = $data['fee_type'];
+            $this->_fee = $data['fee'];
+        } elseif($result['errors']) {
+            $data = $result['errors'];
+
+            $this->_code = $data['code'];
+            $this->_message = $data['message'];
+            //$this->_validations = $data['validations'];
+        }
+
 
         return $this;
     }
@@ -139,6 +177,10 @@ class Zarinpal extends Model
 
     public function getFee(){
         return $this->_fee;
+    }
+
+    public function getValidations(){
+        return $this->_validations;
     }
 
 }
