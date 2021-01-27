@@ -29,12 +29,13 @@ class Zarinpal extends Model
 
     public function request($amount, $description, $mobile = null, $email = null, $card_pan = null, $additional_params = [])
     {
+
         if($additional_params){
             $additional_params = http_build_query($additional_params);
             $this->callback_url = $this->callback_url.'?'.$additional_params;
         }
 
-        $request_params = ['form_params' => [
+        $request_params = [
             'merchant_id' => $this->merchant_id,
             'amount' => $amount,
             'description' => $description,
@@ -44,16 +45,16 @@ class Zarinpal extends Model
                 'email' => $email,
                 'card_pan' => $card_pan,
             ]
-        ]];
+        ];
 
         if($this->testing){
             $url = 'https://sandbox.zarinpal.com/pg/v4/payment/request.json';
         } else {
             $url = 'https://api.zarinpal.com/pg/v4/payment/request.json';
         }
-
+        $body = Json::encode($request_params);
         $client = new Client();
-        $response = $client->request('POST',$url,$request_params);
+        $response = $client->request('POST',['body' => $body]);
         $result = Json::decode($response->getBody());
 
         $data = $result['data'];
