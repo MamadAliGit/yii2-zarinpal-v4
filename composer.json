@@ -19,10 +19,4 @@
             "mamadali\\zarinpal\\": ""
         }
     },
-    "repositories":[
-        {
-            "type": "git",
-            "url": "https://github.com/MamadAliGit/yii2-zarinpal-v4.git"
-        }
-    ]
 }
