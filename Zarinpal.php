@@ -22,9 +22,18 @@ class Zarinpal extends Model
     private $_fee_type;
     private $_fee;
 
+    private $_card_hash;
+    private $_card_pan;
+    private $_ref_id;
 
-    public function request($amount, $description, $mobile = null, $email = null, $card_pan = null)
+
+    public function request($amount, $description, $mobile = null, $email = null, $card_pan = null, $additional_params = [])
     {
+        if($additional_params){
+            $additional_params = http_build_query($additional_params);
+            $this->callback_url = $this->callback_url.'?'.$additional_params;
+        }
+
         $request_params = ['form_params' => [
             'merchant_id' => $this->merchant_id,
             'amount' => $amount,
@@ -56,6 +65,59 @@ class Zarinpal extends Model
         $this->_fee = $data['fee'];
 
         return $this;
+    }
+
+    public function getRedirectUrl()
+    {
+        if($this->testing){
+            $url = 'https://sandbox.zarinpal.com/pg/StartPay/' . $this->_authority;
+        } else {
+            $url = 'https://www.zarinpal.com/pg/StartPay/' . $this->_authority;
+        }
+        return $url;
+    }
+
+    public function verify($amount, $authority)
+    {
+        $request_params = ['form_params' => [
+            'merchant_id' => $this->merchant_id,
+            'amount' => $amount,
+            'authority' => $authority,
+        ]];
+
+        if($this->testing){
+            $url = 'https://sandbox.zarinpal.com/pg/v4/payment/verify.json';
+        } else {
+            $url = 'https://api.zarinpal.com/pg/v4/payment/verify.json';
+        }
+
+        $client = new Client();
+        $response = $client->request('POST',$url,$request_params);
+        $result = Json::decode($response->getBody());
+
+        $data = $result['data'];
+
+        $this->_code = $data['code'];
+        $this->_message = $data['message'];
+        $this->_card_hash = $data['card_hash'];
+        $this->_card_pan = $data['card_pan'];
+        $this->_ref_id = $data['ref_id'];
+        $this->_fee_type = $data['fee_type'];
+        $this->_fee = $data['fee'];
+
+        return $this;
+    }
+
+    public function getRefId(){
+        return $this->_ref_id;
+    }
+
+    public function getCardPan(){
+        return $this->_card_pan;
+    }
+
+    public function getCardHash(){
+        return $this->_card_hash;
     }
 
     public function getCode(){
