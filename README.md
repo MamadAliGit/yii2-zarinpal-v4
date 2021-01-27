@@ -7,25 +7,55 @@ Installation
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
-Either run
+کامند زیر را اجرا کنید
 
 ```
-php composer.phar require --prefer-dist mamadali/yii2-zarinpal-v4 "*"
+composer require mamadali/yii2-zarinpal-v4 "*"
 ```
 
-or add
+کد زیر را
 
 ```
 "mamadali/yii2-zarinpal-v4": "*"
 ```
 
-to the require section of your `composer.json` file.
+در قسمت require فایل `composer.json` اضافه کنید.
 
 
-Usage
+استفاده
 -----
 
-Once the extension is installed, simply use it in your code by  :
+برای استفاده کد زیر را در قسمت components فایل config پروژه اضافه کنید :
 
 ```php
-<?= \mamadali\zarinpal\AutoloadExample::widget(); ?>```
+        'zarinpal' => [
+            'class' => 'mamadali\zarinpal\Zarinpal',
+            'merchant_id' => مرچنت کد دریافتی از زرین پال,
+            'callback_url' => آدرس صفحه بازگشت کاربر از درگاه,
+            'testing' => true, // اگر درحال تست درگاه هستید true در غیر اینصورت این قسمت را کامنت کنید
+        ],
+```
+
+مستندات فنی در آدرس زیر
+https://docs.zarinpal.com/paymentGateway
+
+ارسال درخواست پرداخت
+-----
+
+```php
+$zarinpal = Yii::$app->zarinpal;
+$result = $zarinpal->request($amount, $description, $mobile, $email, $card_pan, $additional_params);
+```
+
+ریدایرکت کردن کاربر به صفحه پرداخت
+----
+```php
+$this->redirect($zarinpal->redirectUrl);
+```
+
+اعتبار سنجی پرداخت کاربر بعد از بازگشت
+----
+```php
+$zarinpal = Yii::$app->zarinpal;
+$result = $zarinpal->verify($amount, $authority);
+```
