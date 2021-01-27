@@ -1,11 +1,11 @@
 Zarinpal Payment
 ================
-Online Zarinpal Payment Extension For Yii2
+افزونه پرداخت زرین پال برای فریم ورک yii2
 
-Installation
+نصب
 ------------
 
-The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
+بهترین روش برای نصب از طریق  [composer](http://getcomposer.org/download/).
 
 کامند زیر را اجرا کنید
 
@@ -13,7 +13,7 @@ The preferred way to install this extension is through [composer](http://getcomp
 composer require mamadali/yii2-zarinpal-v4 "*"
 ```
 
-کد زیر را
+یا کد زیر را
 
 ```
 "mamadali/yii2-zarinpal-v4": "*"
