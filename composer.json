@@ -1,0 +1,21 @@
+{
+    "name": "mamadali/yii2-zarinpal-v4",
+    "description": "Online Zarinpal Payment Extension For Yii2",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension","zaripnpal","زرین پال","zarinpal for yii2"," زرین پال برای yii2"],
+    "license": "LGPL-3.0+",
+    "authors": [
+        {
+            "name": "MamadAliGit",
+            "email": "mhmd.ali.shabani@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "~2.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "mamadali\\zarinpal\\": ""
+        }
+    }
+}
