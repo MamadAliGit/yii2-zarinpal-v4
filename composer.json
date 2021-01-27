@@ -11,11 +11,18 @@
         }
     ],
     "require": {
-        "yiisoft/yii2": "~2.0.0"
+        "yiisoft/yii2": "*",
+        "guzzlehttp/guzzle": "*"
     },
     "autoload": {
         "psr-4": {
             "mamadali\\zarinpal\\": ""
         }
-    }
+    },
+    "repositories":[
+        {
+            "type": "git",
+            "url": "https://github.com/MamadAliGit/yii2-zarinpal-v4.git"
+        }
+    ]
 }
