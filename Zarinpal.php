@@ -38,7 +38,7 @@ class Zarinpal extends Model
      * @return $this
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function request($amount, $description, $mobile = null, $email = null, $card_pan = null, $additional_params = [])
+    public function request($amount, $description, $mobile = null, $email = null, $card_pan = null, $additional_params = [], $wages = [])
     {
 
         if($additional_params){
@@ -55,8 +55,11 @@ class Zarinpal extends Model
                 'mobile' => $mobile,
                 'email' => $email,
                 'card_pan' => $card_pan,
-            ]
+            ],
+			'wages' => $wages,
         ]];
+
+
 
         if($this->testing){
             $url = 'https://sandbox.zarinpal.com/pg/v4/payment/request.json';
