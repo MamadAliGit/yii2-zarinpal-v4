@@ -1,4 +1,7 @@
 Zarinpal Payment
+[![Latest Stable Version](https://img.shields.io/packagist/v/mamadali/yii2-zarinpal-v4.svg)](https://packagist.org/packages/mamadali/yii2-zarinpal-v4)
+[![Total Downloads](https://img.shields.io/packagist/dt/mamadali/yii2-zarinpal-v4.svg)](https://packagist.org/packages/mamadali/yii2-zarinpal-v4)
+
 ================
 افزونه پرداخت زرین پال برای فریم ورک yii2
 
